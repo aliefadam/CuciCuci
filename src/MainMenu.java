@@ -14,6 +14,7 @@ public class MainMenu {
     private static Calendar cal = Calendar.getInstance();
     private static ArrayList<MemberTemp> memberList = new ArrayList<MemberTemp>();
     private static ArrayList<NotaTemp> notaList = new ArrayList<NotaTemp>();
+    private static int idNota = 0;
 
     public static void main(String[] args) {
         String nama = "Alief";
@@ -106,19 +107,17 @@ public class MainMenu {
                     System.out.print("Masukkan berat cucian Anda [Kg]: ");
                     berat = input.nextLine();
                 }
-
                 int sisaHariPengerjaan = sisaHariPengerjaan(paket, fmt.format(cal.getTime()));
-                String notaStruk = generateNota(idMember, paket, Integer.parseInt(berat), fmt.format(cal.getTime()), notaList.size());
-                NotaTemp nota = new NotaTemp(member, notaList.size(), paket, Integer.parseInt(berat), fmt.format(cal.getTime()), sisaHariPengerjaan);
+                String notaStruk = generateNota(idMember, paket, Integer.parseInt(berat), fmt.format(cal.getTime()));
+                NotaTemp nota = new NotaTemp(member, idNota, paket, Integer.parseInt(berat), fmt.format(cal.getTime()), sisaHariPengerjaan);
                 notaList.add(nota);
                 System.out.println(notaStruk);
+                idNota++;
                 return;
             }
         }
         System.out.println("Member dengan ID " + idMember + " tidak ditemukan!");
-
     }
-
     private static void handleListNota() {
         // TODO: handle list semua nota pada sistem
         System.out.println("Terdaftar " + notaList.size() + " nota dalam sistem");
@@ -129,7 +128,7 @@ public class MainMenu {
                 if (isReady) {
                     status = "Sudah dapat diambil";
                 } else {
-                    status = "Belum bisa diambil";
+                    status = "Belum bisa diambil :(";
                 }
                 System.out.println("- [" + nota.getIdNota() + "] Status : " + status);
             }
@@ -163,6 +162,7 @@ public class MainMenu {
                     System.out.println("Nota dengan ID " + idNota + " berhasil diambil!");
                     return;
                 } else {
+                    System.out.println("sisah hari pengerjaan : " + notaList.get(i).getSisaHariPengerjaan());
                     System.out.println("Nota dengan ID " + idNota + " gagal diambil!");
                     return;
                 }
@@ -271,7 +271,7 @@ public class MainMenu {
         return idNota;
     }
 
-    public static String generateNota(String id, String paket, int berat, String tanggalTerima, int idNota) {
+    public static String generateNota(String id, String paket, int berat, String tanggalTerima) {
 
         // mengubah tanggal terima dari input menjadi LocalDate
         String tanggalTerimaStr = tanggalTerima;
@@ -317,7 +317,6 @@ public class MainMenu {
 
         String status = "Belum bisa diambil :(";
 
-
         String nota = "[ ID Nota = " + idNota + " ]"
                 + "\nBerhasil menambahkan nota!"
                 + "\nID    : " + id + "\nPaket : " + newPaket;
@@ -326,6 +325,7 @@ public class MainMenu {
                     + "\nTanggal Terima  : " + tanggalTerima
                     + "\nTanggal Selesai : " + formatter.format(tanggalSelesai)
                     + "\nStatus : " + status;
+            return nota;
         }
         nota += "\nHarga :\n" + beratCucian + " kg x " + harga / beratCucian + " = " + harga
                 + "\nTanggal Terima  : " + tanggalTerima
